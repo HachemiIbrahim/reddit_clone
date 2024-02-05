@@ -7,10 +7,15 @@ environment:
   sdk: '>=3.2.6 <4.0.0'
 
 dependencies:
+  cloud_firestore: ^4.15.3
+  firebase_auth: ^4.17.3
   firebase_core: ^2.25.3
+  firebase_storage: ^11.6.4
   flutter:
     sdk: flutter
-
+  flutter_riverpod: ^2.4.10
+  google_sign_in: ^6.2.1
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
