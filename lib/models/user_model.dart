@@ -51,13 +51,17 @@ class UserModel {
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
+    // Ensure that 'rewards' is a List<String>
+    var rewardsList = map['rewards'] as List<dynamic>;
+    List<String> rewards = rewardsList.cast<String>();
+
     return UserModel(
       uid: map['uid'] as String,
       name: map['name'] as String,
       profilePicture: map['profilePicture'] as String,
       banner: map['banner'] as String,
       karma: map['karma'] as int,
-      rewards: List<String>.from(map['rewards'] as List<String>),
+      rewards: rewards,
       isGuest: map['isGuest'] as bool,
     );
   }
