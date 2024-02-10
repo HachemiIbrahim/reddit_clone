@@ -33,4 +33,19 @@ class CommunityRepository {
       return left(Failure(e.toString()));
     }
   }
+
+  Stream<List<Community>> getUserCommunities(String uid) {
+    return _communities
+        .where('members', arrayContains: uid)
+        .snapshots()
+        .map((event) {
+      List<Community> communities = [];
+      for (var doc in event.docs) {
+        communities.add(
+          Community.fromMap(doc.data() as Map<String, dynamic>),
+        );
+      }
+      return communities;
+    });
+  }
 }

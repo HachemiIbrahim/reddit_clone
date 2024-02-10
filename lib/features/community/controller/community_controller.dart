@@ -14,6 +14,11 @@ final CommunityControllerProvider =
       communityRepository: communityRepository, ref: ref);
 });
 
+final UserCommunityProvider = StreamProvider((ref) {
+  final communityController = ref.watch(CommunityControllerProvider.notifier);
+  return communityController.getUserCommunity();
+});
+
 class CommunityController extends StateNotifier<bool> {
   final CommunityRepository _communityRepository;
   final Ref _ref;
@@ -44,5 +49,10 @@ class CommunityController extends StateNotifier<bool> {
         Routemaster.of(context).pop();
       },
     );
+  }
+
+  Stream<List<Community>> getUserCommunity() {
+    final uid = _ref.read(userProvider)!.uid;
+    return _communityRepository.getUserCommunities(uid);
   }
 }

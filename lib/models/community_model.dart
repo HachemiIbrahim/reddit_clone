@@ -46,13 +46,20 @@ class Community {
   }
 
   factory Community.fromMap(Map<String, dynamic> map) {
+    // Ensure that 'members' and 'mods' are lists before casting
+    var membersList = map['members'];
+    var modsList = map['mods'];
+    List<String> members =
+        membersList is List ? membersList.cast<String>() : [];
+    List<String> mods = modsList is List ? modsList.cast<String>() : [];
+
     return Community(
       id: map['id'] as String,
       name: map['name'] as String,
       banner: map['banner'] as String,
       avatar: map['avatar'] as String,
-      members: List<String>.from(map['members'] as List<String>),
-      mods: List<String>.from(map['mods'] as List<String>),
+      members: members,
+      mods: mods,
     );
   }
 
