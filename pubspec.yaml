@@ -8,6 +8,8 @@ environment:
 
 dependencies:
   cloud_firestore: ^4.15.3
+  dotted_border: ^2.1.0
+  file_picker: ^6.1.1
   firebase_auth: ^4.17.3
   firebase_core: ^2.25.3
   firebase_storage: ^11.6.4
