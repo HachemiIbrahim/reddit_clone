@@ -1,10 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:io';
+
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_clone/core/common/error_text.dart';
 import 'package:reddit_clone/core/common/loading.dart';
 import 'package:reddit_clone/core/constants/constants.dart';
+import 'package:reddit_clone/core/utils.dart';
 import 'package:reddit_clone/features/community/controller/community_controller.dart';
 import 'package:reddit_clone/theme/pallete.dart';
 
@@ -21,6 +24,27 @@ class EditCommunityScreen extends ConsumerStatefulWidget {
 }
 
 class _EditCommunityScreenState extends ConsumerState<EditCommunityScreen> {
+  File? bannerImage;
+  File? profileImage;
+
+  void SelectBannerImage() async {
+    final res = await ImagePicker();
+    if (res != null) {
+      setState(() {
+        bannerImage = File(res.files.first.path!);
+      });
+    }
+  }
+
+  void SelectProfileImage() async {
+    final res = await ImagePicker();
+    if (res != null) {
+      setState(() {
+        profileImage = File(res.files.first.path!);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ref.watch(CommunityByNameProvider(widget.name)).when(
@@ -43,35 +67,51 @@ class _EditCommunityScreenState extends ConsumerState<EditCommunityScreen> {
                       height: 200,
                       child: Stack(
                         children: [
-                          DottedBorder(
-                            borderType: BorderType.RRect,
-                            radius: const Radius.circular(20),
-                            dashPattern: const [10, 4],
-                            strokeCap: StrokeCap.round,
-                            color: Pallete
-                                .darkModeAppTheme.textTheme.bodyText2!.color!,
-                            child: Container(
-                              width: double.infinity,
-                              height: 150,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
+                          GestureDetector(
+                            onTap: SelectBannerImage,
+                            child: DottedBorder(
+                              borderType: BorderType.RRect,
+                              radius: const Radius.circular(20),
+                              dashPattern: const [10, 4],
+                              strokeCap: StrokeCap.round,
+                              color: Pallete
+                                  .darkModeAppTheme.textTheme.bodyText2!.color!,
+                              child: Container(
+                                width: double.infinity,
+                                height: 150,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: bannerImage != null
+                                    ? Image.file(bannerImage!)
+                                    : data.banner.isEmpty ||
+                                            data.banner ==
+                                                Constants.bannerDefault
+                                        ? const Center(
+                                            child:
+                                                Icon(Icons.camera_alt_outlined),
+                                          )
+                                        : Center(
+                                            child: Image.network(data.banner),
+                                          ),
                               ),
-                              child: data.banner.isEmpty ||
-                                      data.banner == Constants.bannerDefault
-                                  ? const Center(
-                                      child: Icon(Icons.camera_alt_outlined),
-                                    )
-                                  : Center(
-                                      child: Image.network(data.banner),
-                                    ),
                             ),
                           ),
                           Positioned(
                             left: 20,
                             bottom: 20,
-                            child: CircleAvatar(
-                              radius: 32,
-                              backgroundImage: NetworkImage(data.avatar),
+                            child: GestureDetector(
+                              onTap: SelectProfileImage,
+                              child: profileImage != null
+                                  ? CircleAvatar(
+                                      radius: 32,
+                                      backgroundImage: FileImage(profileImage!),
+                                    )
+                                  : CircleAvatar(
+                                      radius: 32,
+                                      backgroundImage:
+                                          NetworkImage(data.avatar),
+                                    ),
                             ),
                           )
                         ],
