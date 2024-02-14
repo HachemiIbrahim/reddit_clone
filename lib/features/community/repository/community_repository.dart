@@ -57,6 +57,28 @@ class CommunityRepository {
     });
   }
 
+  Stream<List<Community>> searchCommuniy(String query) {
+    return _communities
+        .where(
+          'name',
+          isGreaterThan: query.isEmpty ? 0 : query,
+          isLessThan: query.isEmpty
+              ? null
+              : query.substring(0, query.length - 1) +
+                  String.fromCharCode(query.codeUnitAt(query.length - 1) + 1),
+        )
+        .snapshots()
+        .map((event) {
+      List<Community> communities = [];
+      for (var community in event.docs) {
+        communities.add(
+          Community.fromMap(community as Map<String, dynamic>),
+        );
+      }
+      return communities;
+    });
+  }
+
   FutureVoid editCommunity(Community community) async {
     try {
       return right(_communities.doc(community.name).update(community.toMap()));
