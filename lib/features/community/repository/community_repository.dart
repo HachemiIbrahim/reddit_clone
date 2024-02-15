@@ -72,7 +72,7 @@ class CommunityRepository {
       List<Community> communities = [];
       for (var community in event.docs) {
         communities.add(
-          Community.fromMap(community as Map<String, dynamic>),
+          Community.fromMap(community.data() as Map<String, dynamic>),
         );
       }
       return communities;
