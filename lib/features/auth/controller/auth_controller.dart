@@ -36,6 +36,10 @@ class AuthController extends StateNotifier<bool> {
 
   Stream<UserModel> getUserData(String uid) => _authRepository.getUserData(uid);
 
+  void LogOut() {
+    _authRepository.LogOut();
+  }
+
   void signInWihGoogle(BuildContext context) async {
     state = true;
     final user = await _authRepository.SignInWithGoogle();
