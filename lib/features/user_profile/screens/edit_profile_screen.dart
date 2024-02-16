@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:reddit_clone/core/constants/constants.dart';
 import 'package:reddit_clone/core/utils.dart';
 import 'package:reddit_clone/features/auth/controller/auth_controller.dart';
+import 'package:reddit_clone/features/user_profile/contoller/user_profile_controller.dart';
 import 'package:reddit_clone/theme/pallete.dart';
 
 class EditProfileScreen extends ConsumerStatefulWidget {
@@ -53,16 +54,25 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     }
   }
 
+  void save() {
+    ref.read(UserProfileControllerProvider.notifier).editProfile(
+          profileImage: profileImage,
+          bannerImage: bannerImage,
+          context: context,
+          name: nameController.text.trim(),
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ref.watch(getUserDataProvider(widget.uid)).when(
           data: (data) {
             return Scaffold(
               appBar: AppBar(
-                title: const Text("Edit Community"),
+                title: const Text("Edit Profile"),
                 actions: [
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () => save(),
                     child: const Text("Save"),
                   ),
                 ],
@@ -122,21 +132,20 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                                     ),
                             ),
                           ),
-                          TextField(
-                            controller: TextEditingController(),
-                            decoration: InputDecoration(
-                              hintText: "name",
-                              filled: true,
-                              focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    const BorderSide(color: Colors.blue),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              border: InputBorder.none,
-                              contentPadding: const EdgeInsets.all(18),
-                            ),
-                          )
                         ],
+                      ),
+                    ),
+                    TextField(
+                      controller: nameController,
+                      decoration: InputDecoration(
+                        hintText: "name",
+                        filled: true,
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.blue),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.all(18),
                       ),
                     )
                   ],

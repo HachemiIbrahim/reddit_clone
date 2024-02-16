@@ -43,7 +43,7 @@ final LoggedInRoute = RouteMap(routes: {
           uid: route.pathParameters['uid']!,
         ),
       ),
-  '/edit_profile/:name': (route) => MaterialPage(
+  '/edit_profile/:uid': (route) => MaterialPage(
         child: EditProfileScreen(
           uid: route.pathParameters['uid']!,
         ),

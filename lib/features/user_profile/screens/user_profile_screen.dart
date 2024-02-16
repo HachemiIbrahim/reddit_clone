@@ -45,7 +45,7 @@ class UserProfile extends ConsumerWidget {
                           alignment: Alignment.bottomLeft,
                           padding: const EdgeInsets.all(20),
                           child: OutlinedButton(
-                            onPressed: () {},
+                            onPressed: () => navigateToEditProfile(context),
                             style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20),
