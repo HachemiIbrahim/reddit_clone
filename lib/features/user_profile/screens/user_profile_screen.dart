@@ -3,9 +3,14 @@ import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:reddit_clone/core/common/error_text.dart";
 import "package:reddit_clone/core/common/loading.dart";
 import "package:reddit_clone/features/auth/controller/auth_controller.dart";
+import "package:routemaster/routemaster.dart";
 
 class UserProfile extends ConsumerWidget {
   final String uid;
+
+  void navigateToEditProfile(BuildContext context) {
+    Routemaster.of(context).push("/edit_profile/$uid");
+  }
 
   const UserProfile({super.key, required this.uid});
   @override
