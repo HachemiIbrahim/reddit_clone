@@ -101,6 +101,24 @@ class CommunityRepository {
     }
   }
 
+  FutureVoid addMods(String communityName, List<String> uids) async {
+    try {
+      return right(
+        _communities.doc(communityName).update(
+          {
+            'mods': uids,
+          },
+        ),
+      );
+    } catch (e) {
+      return left(
+        Failure(
+          e.toString(),
+        ),
+      );
+    }
+  }
+
   FutureVoid leaveCommunity(String communityName, String uid) async {
     try {
       return right(
