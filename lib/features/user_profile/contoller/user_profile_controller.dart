@@ -40,6 +40,7 @@ class UserProfileController extends StateNotifier<bool> {
     required BuildContext context,
     required String name,
   }) async {
+    state = true;
     UserModel user = _ref.read(userProvider)!;
     if (profileImage != null) {
       final res = await _storageRepository.storeFile(
@@ -67,7 +68,7 @@ class UserProfileController extends StateNotifier<bool> {
 
     user = user.copyWith(name: name);
     final res = await _profileRepository.editProfile(user);
-
+    state = false;
     res.fold((l) => showSnackBar(context, l.message), (r) {
       _ref.read(userProvider.notifier).update((state) => user);
       Routemaster.of(context).pop();

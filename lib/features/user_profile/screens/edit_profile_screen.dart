@@ -65,9 +65,12 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(UserProfileControllerProvider);
+    final currentTheme = ref.watch(themeNotifierProvider);
     return ref.watch(getUserDataProvider(widget.uid)).when(
           data: (data) {
             return Scaffold(
+              backgroundColor: currentTheme.backgroundColor,
               appBar: AppBar(
                 title: const Text("Edit Profile"),
                 actions: [
@@ -77,80 +80,87 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   ),
                 ],
               ),
-              body: Padding(
-                padding: const EdgeInsets.all(15),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 200,
-                      child: Stack(
+              body: isLoading
+                  ? Center(
+                      child: Loading(),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Column(
                         children: [
-                          GestureDetector(
-                            onTap: SelectBannerImage,
-                            child: DottedBorder(
-                              borderType: BorderType.RRect,
-                              radius: const Radius.circular(20),
-                              dashPattern: const [10, 4],
-                              strokeCap: StrokeCap.round,
-                              color: Pallete
-                                  .darkModeAppTheme.textTheme.bodyText2!.color!,
-                              child: Container(
-                                width: double.infinity,
-                                height: 150,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: bannerImage != null
-                                    ? Image.file(bannerImage!)
-                                    : data.banner.isEmpty ||
-                                            data.banner ==
-                                                Constants.bannerDefault
-                                        ? const Center(
-                                            child:
-                                                Icon(Icons.camera_alt_outlined),
-                                          )
-                                        : Center(
-                                            child: Image.network(data.banner),
-                                          ),
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            left: 20,
-                            bottom: 20,
-                            child: GestureDetector(
-                              onTap: SelectProfileImage,
-                              child: profileImage != null
-                                  ? CircleAvatar(
-                                      radius: 32,
-                                      backgroundImage: FileImage(profileImage!),
-                                    )
-                                  : CircleAvatar(
-                                      radius: 32,
-                                      backgroundImage:
-                                          NetworkImage(data.profilePicture),
+                          SizedBox(
+                            height: 200,
+                            child: Stack(
+                              children: [
+                                GestureDetector(
+                                  onTap: SelectBannerImage,
+                                  child: DottedBorder(
+                                    borderType: BorderType.RRect,
+                                    radius: const Radius.circular(20),
+                                    dashPattern: const [10, 4],
+                                    strokeCap: StrokeCap.round,
+                                    color: Pallete.darkModeAppTheme.textTheme
+                                        .bodyText2!.color!,
+                                    child: Container(
+                                      width: double.infinity,
+                                      height: 150,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: bannerImage != null
+                                          ? Image.file(bannerImage!)
+                                          : data.banner.isEmpty ||
+                                                  data.banner ==
+                                                      Constants.bannerDefault
+                                              ? const Center(
+                                                  child: Icon(Icons
+                                                      .camera_alt_outlined),
+                                                )
+                                              : Center(
+                                                  child: Image.network(
+                                                      data.banner),
+                                                ),
                                     ),
+                                  ),
+                                ),
+                                Positioned(
+                                  left: 20,
+                                  bottom: 20,
+                                  child: GestureDetector(
+                                    onTap: SelectProfileImage,
+                                    child: profileImage != null
+                                        ? CircleAvatar(
+                                            radius: 32,
+                                            backgroundImage:
+                                                FileImage(profileImage!),
+                                          )
+                                        : CircleAvatar(
+                                            radius: 32,
+                                            backgroundImage: NetworkImage(
+                                                data.profilePicture),
+                                          ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
+                          TextField(
+                            controller: nameController,
+                            decoration: InputDecoration(
+                              hintText: "name",
+                              filled: true,
+                              focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    const BorderSide(color: Colors.blue),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              border: InputBorder.none,
+                              contentPadding: const EdgeInsets.all(18),
+                            ),
+                          )
                         ],
                       ),
                     ),
-                    TextField(
-                      controller: nameController,
-                      decoration: InputDecoration(
-                        hintText: "name",
-                        filled: true,
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Colors.blue),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.all(18),
-                      ),
-                    )
-                  ],
-                ),
-              ),
             );
           },
           error: (error, stackTrace) => ErrorText(
