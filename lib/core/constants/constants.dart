@@ -1,5 +1,5 @@
 import 'package:reddit_clone/features/feed/feed_screen.dart';
-import 'package:reddit_clone/features/posts/screen/post_screen.dart';
+import 'package:reddit_clone/features/posts/screen/add_post_screen.dart';
 
 class Constants {
   static const logoPath = "assets/images/logo.png";
@@ -13,6 +13,6 @@ class Constants {
 
   static const tabWidgets = [
     FeedScreen(),
-    PostScreen(),
+    AddPostScreen(),
   ];
 }
