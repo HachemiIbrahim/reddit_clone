@@ -1,12 +1,29 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reddit_clone/core/constants/constants.dart';
 import 'package:reddit_clone/features/auth/controller/auth_controller.dart';
 import 'package:reddit_clone/features/home/delegates/community_search_delegates.dart';
 import 'package:reddit_clone/features/home/drawers/community_drawer.dart';
 import 'package:reddit_clone/features/home/drawers/profile_drawer.dart';
+import 'package:reddit_clone/theme/pallete.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => HomeScreenState();
+}
+
+class HomeScreenState extends ConsumerState<HomeScreen> {
+  int _page = 0;
+
+  void onPageChanged(int page) {
+    setState(() {
+      _page = page;
+    });
+  }
+
   void ShowDrawer(BuildContext context) {
     Scaffold.of(context).openDrawer();
   }
@@ -16,7 +33,8 @@ class HomeScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
+    final currentTheme = ref.watch(themeNotifierProvider);
     final user = ref.watch(userProvider)!;
     return Scaffold(
       appBar: AppBar(
@@ -48,8 +66,25 @@ class HomeScreen extends ConsumerWidget {
           })
         ],
       ),
+      body: Constants.tabWidgets[_page],
       drawer: const CommunityDrawer(),
       endDrawer: const ProfileDrawer(),
+      bottomNavigationBar: CupertinoTabBar(
+        activeColor: currentTheme.iconTheme.color,
+        backgroundColor: currentTheme.backgroundColor,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add),
+            label: '',
+          ),
+        ],
+        onTap: onPageChanged,
+        currentIndex: _page,
+      ),
     );
   }
 }
