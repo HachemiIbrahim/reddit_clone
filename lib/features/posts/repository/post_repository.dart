@@ -32,6 +32,14 @@ class PostRepository {
     }
   }
 
+  FutureVoid deletePost(Post post) async {
+    try {
+      return right(await _posts.doc(post.id).delete());
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
   Stream<List<Post>> fetchUserPosts(List<Community> communties) {
     return _posts
         .where("communityName", whereIn: communties.map((e) => e.name).toList())
