@@ -7,6 +7,7 @@ environment:
   sdk: '>=3.2.6 <4.0.0'
 
 dependencies:
+  any_link_preview: ^3.0.1
   cloud_firestore: ^4.15.3
   dotted_border: ^2.1.0
   file_picker: ^6.1.1
@@ -33,4 +34,4 @@ flutter:
    - assets/images/google.png
    - assets/images/logo.png
    - assets/images/loginEmote.png
-  
+   - assets/images/awards/

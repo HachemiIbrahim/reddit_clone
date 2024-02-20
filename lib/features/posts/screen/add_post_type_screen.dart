@@ -148,7 +148,7 @@ class _AddPostScreenTypeState extends ConsumerState<AddPostScreenType> {
                   ),
                 if (isLink)
                   TextField(
-                    controller: descriptionController,
+                    controller: linkController,
                     decoration: const InputDecoration(
                       filled: true,
                       hintText: 'Enter Link here',
