@@ -40,6 +40,52 @@ class PostRepository {
     }
   }
 
+  void upvotePost(Post post, String uid) {
+    if (post.downvotes.contains(uid)) {
+      _posts.doc(post.id).update(
+        {
+          'downvotes': FieldValue.arrayRemove([uid]),
+        },
+      );
+    }
+    if (post.upvotes.contains(uid)) {
+      _posts.doc(post.id).update(
+        {
+          'upvotes': FieldValue.arrayRemove([uid]),
+        },
+      );
+    } else {
+      _posts.doc(post.id).update(
+        {
+          'upvotes': FieldValue.arrayUnion([uid]),
+        },
+      );
+    }
+  }
+
+  void downvotePost(Post post, String uid) {
+    if (post.upvotes.contains(uid)) {
+      _posts.doc(post.id).update(
+        {
+          'upvotes': FieldValue.arrayRemove([uid]),
+        },
+      );
+    }
+    if (post.downvotes.contains(uid)) {
+      _posts.doc(post.id).update(
+        {
+          'downvotes': FieldValue.arrayRemove([uid]),
+        },
+      );
+    } else {
+      _posts.doc(post.id).update(
+        {
+          'downvotes': FieldValue.arrayUnion([uid]),
+        },
+      );
+    }
+  }
+
   Stream<List<Post>> fetchUserPosts(List<Community> communties) {
     return _posts
         .where("communityName", whereIn: communties.map((e) => e.name).toList())

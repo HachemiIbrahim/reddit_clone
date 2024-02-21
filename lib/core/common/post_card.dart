@@ -1,7 +1,6 @@
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:reddit_clone/core/constants/constants.dart';
 import 'package:reddit_clone/features/auth/controller/auth_controller.dart';
 import 'package:reddit_clone/features/posts/controller/post_controller.dart';
 import 'package:reddit_clone/models/post_model.dart';
@@ -13,6 +12,14 @@ class PostCard extends ConsumerWidget {
 
   void deletePost(WidgetRef ref, Post post, BuildContext context) {
     ref.watch(postControllerProvider.notifier).deletePost(post, context);
+  }
+
+  void upvotePost(WidgetRef ref, Post post) {
+    ref.watch(postControllerProvider.notifier).upvote(post);
+  }
+
+  void downvotePost(WidgetRef ref, Post post) {
+    ref.watch(postControllerProvider.notifier).downvote(post);
   }
 
   @override
@@ -140,7 +147,7 @@ class PostCard extends ConsumerWidget {
                                 Row(
                                   children: [
                                     IconButton(
-                                      onPressed: () {},
+                                      onPressed: () => upvotePost(ref, post),
                                       icon: Icon(
                                         Icons.arrow_upward_sharp,
                                         size: 20,
@@ -154,7 +161,7 @@ class PostCard extends ConsumerWidget {
                                       style: const TextStyle(fontSize: 14),
                                     ),
                                     IconButton(
-                                      onPressed: () {},
+                                      onPressed: () => downvotePost(ref, post),
                                       icon: Icon(
                                         Icons.arrow_downward_sharp,
                                         size: 20,
