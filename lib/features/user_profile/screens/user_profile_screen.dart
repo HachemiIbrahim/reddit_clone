@@ -2,7 +2,9 @@ import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:reddit_clone/core/common/error_text.dart";
 import "package:reddit_clone/core/common/loading.dart";
+import "package:reddit_clone/core/common/post_card.dart";
 import "package:reddit_clone/features/auth/controller/auth_controller.dart";
+import "package:reddit_clone/features/user_profile/contoller/user_profile_controller.dart";
 import "package:routemaster/routemaster.dart";
 
 class UserProfile extends ConsumerWidget {
@@ -90,7 +92,22 @@ class UserProfile extends ConsumerWidget {
                   ),
                 ];
               },
-              body: const Text("posts"),
+              body: ref.watch(getUserPostsProvider(uid)).when(
+                    data: (data) {
+                      return ListView.builder(
+                        itemCount: data.length,
+                        itemBuilder: (context, index) {
+                          final post = data[index];
+                          return PostCard(post: post);
+                        },
+                      );
+                    },
+                    error: (error, stackTrace) {
+                      print(error.toString());
+                      return ErrorText(error: error.toString());
+                    },
+                    loading: () => Loading(),
+                  ),
             ),
             error: (error, stackTrace) => ErrorText(error: error.toString()),
             loading: () => Loading(),
