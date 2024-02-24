@@ -46,10 +46,15 @@ class PostRepository {
 
   FutureVoid addComment(Comment commnet) async {
     try {
+      await _comments.doc(commnet.id).set(
+            commnet.toMap(),
+          );
       return right(
-        await _comments.doc(commnet.id).set(
-              commnet.toMap(),
-            ),
+        _posts.doc(commnet.postId).update(
+          {
+            'commentCount': FieldValue.increment(1),
+          },
+        ),
       );
     } catch (e) {
       return left(Failure(e.toString()));
@@ -119,6 +124,22 @@ class PostRepository {
   Stream<Post> getPostById(String postId) {
     return _posts.doc(postId).snapshots().map(
           (event) => Post.fromMap(event.data() as Map<String, dynamic>),
+        );
+  }
+
+  Stream<List<Comment>> getCommentsOfPost(String postId) {
+    return _comments
+        .where('postId', isEqualTo: postId)
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map(
+          (event) => event.docs
+              .map(
+                (e) => Comment.fromMap(
+                  e.data() as Map<String, dynamic>,
+                ),
+              )
+              .toList(),
         );
   }
 }
