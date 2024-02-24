@@ -5,6 +5,7 @@ import 'package:reddit_clone/core/constants/firebase_constants.dart';
 import 'package:reddit_clone/core/failure.dart';
 import 'package:reddit_clone/core/providers/firebase_providers.dart';
 import 'package:reddit_clone/core/type_defs.dart';
+import 'package:reddit_clone/models/comment_model.dart';
 import 'package:reddit_clone/models/community_model.dart';
 import 'package:reddit_clone/models/post_model.dart';
 
@@ -19,6 +20,9 @@ class PostRepository {
 
   CollectionReference get _posts =>
       _firestore.collection(FirebaseConstants.postsCollection);
+
+  CollectionReference get _comments =>
+      _firestore.collection(FirebaseConstants.commentsCollection);
 
   FutureVoid addPost(Post post) async {
     try {
@@ -35,6 +39,18 @@ class PostRepository {
   FutureVoid deletePost(Post post) async {
     try {
       return right(await _posts.doc(post.id).delete());
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  FutureVoid addComment(Comment commnet) async {
+    try {
+      return right(
+        await _comments.doc(commnet.id).set(
+              commnet.toMap(),
+            ),
+      );
     } catch (e) {
       return left(Failure(e.toString()));
     }
@@ -97,6 +113,12 @@ class PostRepository {
                 (e) => Post.fromMap(e.data() as Map<String, dynamic>),
               )
               .toList(),
+        );
+  }
+
+  Stream<Post> getPostById(String postId) {
+    return _posts.doc(postId).snapshots().map(
+          (event) => Post.fromMap(event.data() as Map<String, dynamic>),
         );
   }
 }
