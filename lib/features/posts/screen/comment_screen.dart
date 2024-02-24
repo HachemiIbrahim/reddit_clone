@@ -41,40 +41,42 @@ class _CommentScreenState extends ConsumerState<CommentScreen> {
       appBar: AppBar(),
       body: ref.watch(PostById(widget.postId)).when(
             data: (data) {
-              return Column(
-                children: [
-                  PostCard(post: data),
-                  TextField(
-                    onSubmitted: (value) => addComment(data),
-                    controller: commentController,
-                    decoration: const InputDecoration(
-                      hintText: 'What are your thoughts?',
-                      filled: true,
-                      border: InputBorder.none,
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    PostCard(post: data),
+                    TextField(
+                      onSubmitted: (value) => addComment(data),
+                      controller: commentController,
+                      decoration: const InputDecoration(
+                        hintText: 'What are your thoughts?',
+                        filled: true,
+                        border: InputBorder.none,
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  ref.watch(fetchPostComments(widget.postId)).when(
-                        data: (data) {
-                          return Expanded(
-                            child: ListView.builder(
-                              itemCount: data.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                final comment = data[index];
-                                return CommentCard(comment: comment);
-                              },
-                            ),
-                          );
-                        },
-                        error: (error, stackTrace) {
-                          print(error.toString());
-                          return ErrorText(error: error.toString());
-                        },
-                        loading: () => Loading(),
-                      )
-                ],
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    ref.watch(fetchPostComments(widget.postId)).when(
+                          data: (data) {
+                            return Expanded(
+                              child: ListView.builder(
+                                itemCount: data.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  final comment = data[index];
+                                  return CommentCard(comment: comment);
+                                },
+                              ),
+                            );
+                          },
+                          error: (error, stackTrace) {
+                            print(error.toString());
+                            return ErrorText(error: error.toString());
+                          },
+                          loading: () => Loading(),
+                        )
+                  ],
+                ),
               );
             },
             error: (error, stackTrace) => ErrorText(
