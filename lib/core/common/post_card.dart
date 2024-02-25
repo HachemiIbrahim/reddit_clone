@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:reddit_clone/core/common/error_text.dart';
 import 'package:reddit_clone/core/common/loading.dart';
+import 'package:reddit_clone/core/constants/constants.dart';
 import 'package:reddit_clone/features/auth/controller/auth_controller.dart';
 import 'package:reddit_clone/features/community/controller/community_controller.dart';
 import 'package:reddit_clone/features/posts/controller/post_controller.dart';
@@ -24,6 +25,12 @@ class PostCard extends ConsumerWidget {
 
   void downvotePost(WidgetRef ref, Post post) {
     ref.watch(postControllerProvider.notifier).downvote(post);
+  }
+
+  void awardPost(WidgetRef ref, Post post, String award, BuildContext context) {
+    ref
+        .watch(postControllerProvider.notifier)
+        .awardPost(post: post, award: award, context: context);
   }
 
   void navigationToCommunity(BuildContext context) {
@@ -117,6 +124,23 @@ class PostCard extends ConsumerWidget {
                               )
                             ],
                           ),
+                          if (post.awards.isNotEmpty) ...[
+                            const SizedBox(height: 5),
+                            SizedBox(
+                              height: 25,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: post.awards.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  final award = post.awards[index];
+                                  return Image.asset(
+                                    Constants.awards[award]!,
+                                    height: 23,
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
                           Container(
                             margin: const EdgeInsets.only(left: 10),
                             alignment: Alignment.topLeft,
@@ -230,7 +254,48 @@ class PostCard extends ConsumerWidget {
                                               ErrorText(
                                                   error: error.toString()),
                                           loading: () => Loading(),
-                                        )
+                                        ),
+                                    IconButton(
+                                      onPressed: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) => Dialog(
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(20),
+                                              child: GridView.builder(
+                                                shrinkWrap: true,
+                                                gridDelegate:
+                                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                                  crossAxisCount: 4,
+                                                ),
+                                                itemCount: user.rewards.length,
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int index) {
+                                                  final award =
+                                                      user.rewards[index];
+
+                                                  return GestureDetector(
+                                                    onTap: () => awardPost(ref,
+                                                        post, award, context),
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Image.asset(
+                                                          Constants
+                                                              .awards[award]!),
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      icon: const Icon(
+                                          Icons.card_giftcard_outlined),
+                                    )
                                   ],
                                 ),
                               ],
