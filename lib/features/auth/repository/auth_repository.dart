@@ -36,8 +36,10 @@ class AuthRepository {
 
   Stream<User?> get authStateChange => _auth.authStateChanges();
 
-  FutureEither<UserModel> SignInWithGoogle() async {
+  FutureEither<UserModel> signInWithGoogle(bool isFromLogin) async {
     try {
+      UserCredential userCredential;
+
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
       final googleAuth = await googleUser?.authentication;
@@ -46,44 +48,45 @@ class AuthRepository {
         accessToken: googleAuth?.accessToken,
         idToken: googleAuth?.idToken,
       );
-      UserCredential userCredential =
-          await _auth.signInWithCredential(credential);
+
+      if (isFromLogin) {
+        userCredential = await _auth.signInWithCredential(credential);
+      } else {
+        userCredential =
+            await _auth.currentUser!.linkWithCredential(credential);
+      }
 
       UserModel userModel;
 
       if (userCredential.additionalUserInfo!.isNewUser) {
         userModel = UserModel(
-          uid: userCredential.user!.uid,
-          name: userCredential.user!.displayName ?? "default",
+          name: userCredential.user!.displayName ?? 'No Name',
           profilePicture:
               userCredential.user!.photoURL ?? Constants.avatarDefault,
           banner: Constants.bannerDefault,
+          uid: userCredential.user!.uid,
+          isGuest: true,
           karma: 0,
-          rewards: [],
-          isGuest: false,
+          rewards: [
+            'awesomeAns',
+            'gold',
+            'platinum',
+            'helpful',
+            'plusone',
+            'rocket',
+            'thankyou',
+            'til',
+          ],
         );
-
-        await _users.doc(userModel.uid).set(
-              userModel.toMap(),
-            );
+        await _users.doc(userCredential.user!.uid).set(userModel.toMap());
       } else {
         userModel = await getUserData(userCredential.user!.uid).first;
       }
       return right(userModel);
     } on FirebaseException catch (e) {
-      print(e.toString());
-      return left(
-        Failure(
-          e.toString(),
-        ),
-      );
+      throw e.message!;
     } catch (e) {
-      print(e.toString());
-      return left(
-        Failure(
-          e.toString(),
-        ),
-      );
+      return left(Failure(e.toString()));
     }
   }
 

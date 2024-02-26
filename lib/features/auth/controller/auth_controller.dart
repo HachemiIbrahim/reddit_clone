@@ -40,9 +40,9 @@ class AuthController extends StateNotifier<bool> {
     _authRepository.LogOut();
   }
 
-  void signInWihGoogle(BuildContext context) async {
+  void signInWithGoogle(BuildContext context, bool isFromLogin) async {
     state = true;
-    final user = await _authRepository.SignInWithGoogle();
+    final user = await _authRepository.signInWithGoogle(isFromLogin);
     state = false;
     user.fold(
       (l) => showSnackBar(context, l.message),

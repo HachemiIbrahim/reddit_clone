@@ -51,6 +51,7 @@ class PostCard extends ConsumerWidget {
     final isTypeText = post.type == 'text';
     final isTypeLink = post.type == 'link';
     final user = ref.watch(userProvider)!;
+    final isGuest = user.isGuest;
     final currentTheme = ref.watch(themeNotifierProvider);
     return Column(
       children: [
@@ -194,7 +195,9 @@ class PostCard extends ConsumerWidget {
                                 Row(
                                   children: [
                                     IconButton(
-                                      onPressed: () => upvotePost(ref, post),
+                                      onPressed: isGuest
+                                          ? () {}
+                                          : () => upvotePost(ref, post),
                                       icon: Icon(
                                         Icons.arrow_upward_sharp,
                                         size: 20,
@@ -208,7 +211,9 @@ class PostCard extends ConsumerWidget {
                                       style: const TextStyle(fontSize: 14),
                                     ),
                                     IconButton(
-                                      onPressed: () => downvotePost(ref, post),
+                                      onPressed: isGuest
+                                          ? () {}
+                                          : () => downvotePost(ref, post),
                                       icon: Icon(
                                         Icons.arrow_downward_sharp,
                                         size: 20,
@@ -222,8 +227,9 @@ class PostCard extends ConsumerWidget {
                                 Row(
                                   children: [
                                     IconButton(
-                                      onPressed: () =>
-                                          navigateToComments(context),
+                                      onPressed: isGuest
+                                          ? () {}
+                                          : () => navigateToComments(context),
                                       icon: const Icon(
                                         Icons.comment,
                                         size: 20,
@@ -256,43 +262,53 @@ class PostCard extends ConsumerWidget {
                                           loading: () => Loading(),
                                         ),
                                     IconButton(
-                                      onPressed: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) => Dialog(
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(20),
-                                              child: GridView.builder(
-                                                shrinkWrap: true,
-                                                gridDelegate:
-                                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                                  crossAxisCount: 4,
-                                                ),
-                                                itemCount: user.rewards.length,
-                                                itemBuilder:
-                                                    (BuildContext context,
-                                                        int index) {
-                                                  final award =
-                                                      user.rewards[index];
+                                      onPressed: isGuest
+                                          ? () {}
+                                          : () {
+                                              showDialog(
+                                                context: context,
+                                                builder: (context) => Dialog(
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            20),
+                                                    child: GridView.builder(
+                                                      shrinkWrap: true,
+                                                      gridDelegate:
+                                                          const SliverGridDelegateWithFixedCrossAxisCount(
+                                                        crossAxisCount: 4,
+                                                      ),
+                                                      itemCount:
+                                                          user.rewards.length,
+                                                      itemBuilder:
+                                                          (BuildContext context,
+                                                              int index) {
+                                                        final award =
+                                                            user.rewards[index];
 
-                                                  return GestureDetector(
-                                                    onTap: () => awardPost(ref,
-                                                        post, award, context),
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Image.asset(
-                                                          Constants
-                                                              .awards[award]!),
+                                                        return GestureDetector(
+                                                          onTap: () =>
+                                                              awardPost(
+                                                                  ref,
+                                                                  post,
+                                                                  award,
+                                                                  context),
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(8.0),
+                                                            child: Image.asset(
+                                                                Constants
+                                                                        .awards[
+                                                                    award]!),
+                                                          ),
+                                                        );
+                                                      },
                                                     ),
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      },
+                                                  ),
+                                                ),
+                                              );
+                                            },
                                       icon: const Icon(
                                           Icons.card_giftcard_outlined),
                                     )
