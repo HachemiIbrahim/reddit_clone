@@ -45,4 +45,6 @@ Before you begin, ensure you have met the following requirements:
 3. **Subreddits**: Explore various subreddits and sort posts based on your preferences.
 4. **Profile**: Customize your profile with a profile picture and bio.
 
+  <img src="images/Reddit App Redesign-2.jpg" alt="Image Description" width="736" height="552" style="margin-right: 10px;">
+
 
